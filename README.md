@@ -75,81 +75,55 @@ $$
 
 #### 1. 装机容量递推约束
 
-$$
-\text{TotalCap}_{i,t} = \text{initial\_cap}_i + \sum_{k=1}^{t} \text{Build}_{i,k}, \quad \forall i \in I, \forall t
-$$
+$$\text{TotalCap}_{i,t} = \text{initial\_cap}_i + \sum_{k=1}^{t} \text{Build}_{i,k}, \quad \forall i \in I, \forall t$$
 
-$$
-\text{TotalCapStorage}_{t} = \text{initial\_cap}_s + \sum_{k=1}^{t} \text{BuildStorage}_k, \quad \forall t
-$$
+$$\text{TotalCapStorage}_{t} = \text{initial\_cap}_s + \sum_{k=1}^{t} \text{BuildStorage}_k, \quad \forall t$$
 
 #### 2. 装机容量限制
 
-$$
-\text{Build}_{i,t} \leq \overline{B}_i, \quad \text{TotalCap}_{i,t} \leq \overline{C}_i, \quad \forall i, t
-$$
+$$\text{Build}_{i,t} \leq \overline{B}_i, \quad \text{TotalCap}_{i,t} \leq \overline{C}_i, \quad \forall i, t$$
 
-$$
-\text{BuildStorage}_t \leq \overline{B}_s, \quad \text{TotalCapStorage}_t \leq \overline{C}_s, \quad \forall t
-$$
+$$\text{BuildStorage}_t \leq \overline{B}_s, \quad \text{TotalCapStorage}_t \leq \overline{C}_s, \quad \forall t$$
 
 #### 3. 发电出力限制
 
-$$
-\text{Gen}_{i,t} \leq \text{TotalCap}_{i,t}, \quad \forall i, t
-$$
+$$\text{Gen}_{i,t} \leq \text{TotalCap}_{i,t}, \quad \forall i, t$$
 
 #### 4. 储能荷电平衡
 
-$$
-\text{SOC}_t = \text{SOC}_{t-1} + \eta_{ch} \cdot \text{Charge}_t - \frac{1}{\eta_{dis}} \cdot \text{Discharge}_t, \quad \forall t
-$$
+$$\text{SOC}_t = \text{SOC}_{t-1} + \eta_{ch} \cdot \text{Charge}_t - \frac{1}{\eta_{dis}} \cdot \text{Discharge}_t, \quad \forall t$$
 
 其中当 $t=1$ 时，$\text{SOC}_0 = 0$。
 
 #### 5. 储能荷电上限
 
-$$
-\text{SOC}_t \leq \text{TotalCapStorage}_t, \quad \forall t
-$$
+$$\text{SOC}_t \leq \text{TotalCapStorage}_t, \quad \forall t$$
 
 #### 6. 可再生能源占比约束
 
-$$
-\sum_{i \in R} \text{Gen}_{i,t} \geq r_t \cdot \left( \sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t \right), \quad \forall t
-$$
+$$\sum_{i \in R} \text{Gen}_{i,t} \geq r_t \cdot \left( \sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t \right), \quad \forall t$$
 
 #### 7. 功率平衡约束（含储能充放电）
 
-$$
-\sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t \geq d_t + \text{Charge}_t, \quad \forall t
-$$
+$$\sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t \geq d_t + \text{Charge}_t, \quad \forall t$$
 
 #### 8. 潮流平衡方程（DC潮流）
 
 * 平衡节点角度固定：
 
-$$
-\theta_{1,t} = 0, \quad \forall t
-$$
+$$\theta_{1,t} = 0, \quad \forall t$$
 
 * 线路潮流：
 
-$$
-\text{Flow}_{l,t} = \frac{\theta_{i,t} - \theta_{j,t}}{x_l}, \quad \forall l = (i,j), \forall t
-$$
+$$\text{Flow}_{l,t} = \frac{\theta_{i,t} - \theta_{j,t}}{x_l}, \quad \forall l = (i,j), \forall t$$
 
 * 线路容量限制：
 
-$$
--\overline{F}_l \leq \text{Flow}_{l,t} \leq \overline{F}_l, \quad \forall l, t
-$$
+$$-\overline{F}_l \leq \text{Flow}_{l,t} \leq \overline{F}_l, \quad \forall l, t$$
 
 #### 9. 节点功率平衡（仅对平衡节点写出）
 
-$$
-\sum_{l \in \delta^+(n)} \text{Flow}_{l,t} - \sum_{l \in \delta^-(n)} \text{Flow}_{l,t} = \sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t - \text{Charge}_t - d_t
-$$
+$$\sum_{l \in \delta^+(n)} \text{Flow}_{l,t} - \sum_{l \in \delta^-(n)} \text{Flow}_{l,t} = \sum_{i \in I} \text{Gen}_{i,t} + \text{Discharge}_t - \text{Charge}_t - d_t$$
 
 其中，$\delta^+(n)$、$\delta^-(n)$ 分别为节点 $n$ 的流入、流出线路集合。你的代码中暂时只对平衡节点（节点 0）进行了平衡约束建模。
 
