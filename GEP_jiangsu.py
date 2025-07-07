@@ -1,13 +1,14 @@
 import numpy as np
 import gurobipy as gp
 from gurobipy import GRB
-from Garver6 import case_garver6
+# from Garver6 import case_garver6
+from casejiangsu import casejiangsu
 
 # =======================
 # 读取Garver 6节点系统
 # =======================
 
-ppc = case_garver6()
+ppc = casejiangsu()
 bus = ppc["bus"]
 branch = ppc["branch"]
 baseMVA = ppc["baseMVA"]
@@ -31,34 +32,50 @@ for k in range(nbranch):
 # 输入数据
 # =======================
 
-T = 5
-I = ['coal', 'gas', 'wind', 'solar']
-renewable = ['wind', 'solar']
+T = 10
+I = ['coal', 'hydro', 'wind', 'solar','nuclear']
+renewable = ['wind', 'solar', 'hydro', 'nuclear']
 
 # 用电需求（MW）
-d = {1: 3000, 2: 5000, 3: 7000, 4: 9000, 5: 10000}
-
+# 示例：按照江苏年用电量增长趋势设定需求
+d = {i: 16000 * 1.06 ** (i - 1) for i in range(1, 11)}  # MW
 # 投资成本 ($/MW)
-c = {'coal': 32.8, 'gas': 35, 'wind': 138.86, 'solar': 98.84}
-
+c = {
+    'coal': 2000,     # $/kW × 1000
+    'hydro': 2500,
+    'wind': 1500,
+    'solar': 1000,
+    'nuclear': 3000
+}
 # 运行成本 ($/MWh)
-o = {'coal': 50, 'gas': 60, 'wind': 10, 'solar': 5}
+o = {
+    'coal': 45,
+    'hydro': 20,
+    'wind': 12,
+    'solar': 7,
+    'nuclear': 50
+}
 
 # 最大投资和容量
-max_build = {'coal': 2000, 'gas': 3000, 'wind': 5000, 'solar': 5000}
-max_cap = {'coal': 5000, 'gas': 3000, 'wind': 2000, 'solar': 4000}
-initial_cap = {'coal': 2000, 'gas': 500, 'wind': 800, 'solar': 800}
-
+max_build = {'coal': 900, 'hydro': 300, 'wind': 500, 'solar': 500, 'nuclear': 500}
+max_cap =   {'coal': 19000, 'hydro': 3000, 'wind': 5000, 'solar': 5000, 'nuclear': 3000}
+initial_cap = {
+    'coal': 10600,     # 含煤电、部分燃气发电
+    'hydro': 880,
+    'nuclear': 700,
+    'wind': 2500,
+    'solar': 1200
+    # 'biomass': 600    # 假设，数据未给出，可留待你进一步填充
+}
 # 储能
-c_s, o_s = 23.25, 5
+c_s, o_s = 1500, 5
 eta_ch, eta_dis = 0.95, 0.95
 max_build_s = 5000
 max_cap_s = 2000
 initial_cap_s = 0
 
 # 可再生能源比例
-r = {1: 0.6, 2: 0.6, 3: 0.6, 4: 0.6, 5: 0.6}
-
+r = {i: 0.2 + 0.02 * (i - 1) for i in range(1, T+1)}  # 假设20%的可再生能源比例
 # 线路容量（MW）
 line_limit = branch[:, 5]
 

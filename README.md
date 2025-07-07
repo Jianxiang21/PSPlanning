@@ -147,3 +147,29 @@ $\sum_{l \in \delta^+(n)} \text{Flow}_{l,t} - \sum_{l \in \delta^-(n)} \text{Flo
 * 纳入二氧化碳排放约束
 * 扩展 AC 潮流模型
 * 引入投资折现、利率、生命周期成本等现实要素
+
+
+$$
+\begin{align*}
+\text{min} \quad 
+& \sum_{t\in T} \left[\sum_{g\in G}(C_g^{inv}x_{g,t}^{add}+C_g^{fix}y_{g,t})+\sum_{g\in G}\sum_{h\in H}C_g^{var}p_{g,t,h}+ \sum_{s \in S} \left( 
+    C_s^{\text{inv,p}} \cdot x_{s,t}^{\text{p}} + 
+    C_s^{\text{inv,e}} \cdot x_{s,t}^{\text{e}} + 
+    C_s^{\text{fix}} \cdot y_{s,t} 
+  \right)  + \sum_{s \in S} \sum_{h \in H} C_s^{\text{var}} \cdot \left( p_{s,t,h}^{\text{ch}} + p_{s,t,h}^{\text{dis}} \right) \right]+\sum_{l\in L}C_l^{line}x_l \\
+\text{s.t.} \quad 
+& \sum_{g \in G} p_{g,t,h} + \sum_{s \in S} p_{s,t,h}^{\text{dis}} = D_{t,h} + \sum_{s \in S} p_{s,t,h}^{\text{ch}}, && \forall t, h \\
+& 0 \leq p_{g,t,h} \leq y_{g,t} \cdot P_g^{\max}, && \forall g, t, h \\
+& 0 \leq p_{r,t,h} \leq A_{r,t,h} \cdot P_r^{\max}, && \forall r \in \{风电, 光伏, 生物质\}, t, h \\
+& 0 \leq p_{s,t,h}^{\text{ch}} \leq P_s^{\text{ch,max}}, && \forall s, t, h \\
+& 0 \leq p_{s,t,h}^{\text{dis}} \leq P_s^{\text{dis,max}}, && \forall s, t, h \\
+& E_{s,t,h} = E_{s,t,h-1} + \eta_s^{\text{ch}} \cdot p_{s,t,h}^{\text{ch}} - \frac{p_{s,t,h}^{\text{dis}}}{\eta_s^{\text{dis}}}, && \forall s, t, h \\
+& 0 \leq E_{s,t,h} \leq E_s^{\max}, && \forall s, t, h\\
+& \sum_{g \in G_i} p_{g,t,h} + \sum_{s \in S_i} p_{s,t,h}^{\text{dis}} - \sum_{s \in S_i} p_{s,t,h}^{\text{ch}} - D_{i,t,h} = \sum_{j \in N(i)} f_{ij,t,h}, && \forall i, t, h \\
+& f_{l,t,h} = B_l \cdot (\theta_{i,t,h} - \theta_{j,t,h}) \cdot x_l, && \forall l(i,j), t, h \\
+& -x_l \cdot F_l^{\max} \leq f_{l,t,h} \leq x_l \cdot F_l^{\max}, && \forall l, t, h \\
+& \sum_{l \in L^{\text{cand}}} x_l \leq N^{\text{max}}, && \text{[可选约束]} \\
+& \theta_{i_0,t,h} = 0, && \forall t, h
+\end{align*}
+
+$$

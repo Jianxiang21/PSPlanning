@@ -1,0 +1,46 @@
+\ Model GEP_with_Storage_and_DCFlow_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0xfb0d299f6195206d
+Minimize
+ 
+Subject To
+ TotalCap_coal_1: - Build[coal,1] + TotalCap[coal,1] = 10600
+ GenLimit_coal_1: Gen[coal,1] - TotalCap[coal,1] <= 0
+ TotalCap_coal_10: - Build[coal,1] - Build[coal,2] - Build[coal,3]
+   - Build[coal,4] - Build[coal,5] - Build[coal,6] - Build[coal,7]
+   - Build[coal,8] - Build[coal,9] - Build[coal,10] + TotalCap[coal,10]
+   = 10600
+ MaxCap_coal_10: TotalCap[coal,10] <= 19000
+ TotalCap_hydro_1: - Build[hydro,1] + TotalCap[hydro,1] = 880
+ GenLimit_hydro_1: Gen[hydro,1] - TotalCap[hydro,1] <= 0
+ BuildLimit_hydro_1: Build[hydro,1] <= 1000
+ TotalCap_wind_1: - Build[wind,1] + TotalCap[wind,1] = 2500
+ GenLimit_wind_1: Gen[wind,1] - TotalCap[wind,1] <= 0
+ BuildLimit_wind_1: Build[wind,1] <= 2000
+ TotalCap_solar_1: - Build[solar,1] + TotalCap[solar,1] = 1200
+ GenLimit_solar_1: Gen[solar,1] - TotalCap[solar,1] <= 0
+ BuildLimit_solar_1: Build[solar,1] <= 3000
+ GenLimit_biomass_1: Gen[biomass,1] - TotalCap[biomass,1] <= 0
+ MaxCap_biomass_1: TotalCap[biomass,1] <= 3000
+ SocBalance_1: StateOfCharge[1] - 0.95 Charge[1]
+   + 1.052631578947368 Discharge[1] = 0
+ PowerBalance_1: Gen[coal,1] + Gen[hydro,1] + Gen[wind,1] + Gen[solar,1]
+   + Gen[biomass,1] - Charge[1] + Discharge[1] >= 120000
+Bounds
+ Build[coal,1] free
+ Build[hydro,1] free
+ Build[wind,1] free
+ Build[solar,1] free
+ Gen[coal,1] free
+ Gen[hydro,1] free
+ Gen[wind,1] free
+ Gen[solar,1] free
+ Gen[biomass,1] free
+ TotalCap[coal,1] free
+ TotalCap[coal,10] free
+ TotalCap[hydro,1] free
+ TotalCap[wind,1] free
+ TotalCap[solar,1] free
+ TotalCap[biomass,1] free
+ Discharge[1] free
+End
